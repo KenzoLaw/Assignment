@@ -1,0 +1,30 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+main(){
+
+	FILE *fp;
+
+	char returnData[64];
+	char *token;
+	char *loc[80];
+	int i = 0;
+
+	fp = popen("/sbin/ifconfig eth0", "r");
+
+	while (fgets(returnData, 64, fp) != NULL)
+	{
+		token = strtok (returnData," :");
+		while( token!=NULL )
+		{
+			loc[i] = malloc(strlen(token) + 1);
+			strcpy(loc[i],token);
+			token = strtok ( NULL, " :");
+			i++;
+		}
+	}
+	printf ("Ethernet: %s\n",loc[0]);
+	printf ("Inet Address: %s\n",loc[14]);
+	pclose(fp);
+}
